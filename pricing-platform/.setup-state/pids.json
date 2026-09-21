@@ -1,0 +1,17 @@
+{
+    "api":  {
+                "started":  "639253339362885810",
+                "id":  356,
+                "command":  "-m"
+            },
+    "worker":  {
+                   "started":  "639254480153844357",
+                   "id":  6496,
+                   "command":  "-m"
+               },
+    "frontend":  {
+                     "started":  "639253339394881428",
+                     "id":  15192,
+                     "command":  "C:\\Users\\dell\\Desktop\\price inteli\\pricing-platform\\frontend\\node_modules\\vite\\bin\\vite.js"
+                 }
+}

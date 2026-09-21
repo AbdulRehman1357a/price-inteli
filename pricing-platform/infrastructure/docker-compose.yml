@@ -1,0 +1,120 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: rpip_db
+      MYSQL_USER: rpip_user
+      MYSQL_PASSWORD: rpip_password
+      MYSQL_ROOT_PASSWORD: rpip_root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  mqtt:
+    # Broker for the Phase 8 ESL device simulator
+    # (app/services/mqtt_publisher.py, app/integrations/esl_simulator/).
+    # Publishing is best-effort — the app runs fine without this service,
+    # falling back to a synchronous simulated acknowledgement.
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    command: mosquitto -c /mosquitto-no-auth.conf
+
+  backend:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    env_file:
+      - ../backend/.env
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: rpip_db
+      MYSQL_USER: rpip_user
+      MYSQL_PASSWORD: rpip_password
+      REDIS_URL: redis://redis:6379/0
+      MQTT_BROKER_HOST: mqtt
+      MQTT_BROKER_PORT: 1883
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      mqtt:
+        condition: service_started
+
+  celery_worker:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    env_file:
+      - ../backend/.env
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: rpip_db
+      MYSQL_USER: rpip_user
+      MYSQL_PASSWORD: rpip_password
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  celery_beat:
+    # Phase 15's periodic analytics snapshot recompute
+    # (app/tasks/analytics.py's beat_schedule in app/tasks/celery_app.py) —
+    # this codebase's first scheduled job; every other task is dispatched
+    # inline right after a DB write. Optional: dashboard reads still work
+    # with no beat process running, just falling back to computing/caching
+    # on demand (see app.services.analytics_service).
+    build:
+      context: ../backend
+    restart: unless-stopped
+    command: celery -A app.tasks.celery_app beat --loglevel=info
+    env_file:
+      - ../backend/.env
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: rpip_db
+      MYSQL_USER: rpip_user
+      MYSQL_PASSWORD: rpip_password
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ../frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
