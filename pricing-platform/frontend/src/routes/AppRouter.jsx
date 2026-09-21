@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
+import CategoryEditPage from "../pages/CategoryEditPage";
+import CategoriesListPage from "../pages/CategoriesListPage";
 import AgentCreatePage from "../pages/AgentCreatePage";
 import AgentEditPage from "../pages/AgentEditPage";
 import AgentRunHistoryPage from "../pages/AgentRunHistoryPage";
@@ -108,6 +110,9 @@ const router = createBrowserRouter([
           { path: "ai-agents/:agentId/edit", element: <AgentEditPage /> },
           { path: "ai-agents/:agentId/runs", element: <AgentRunHistoryPage /> },
           { path: "profile", element: <ProfilePage /> },
+          { path: "categories", element: <CategoriesListPage /> },
+          { path: "categories/new", element: <CategoryEditPage /> },
+          { path: "categories/:categoryId/edit", element: <CategoryEditPage /> },
           { path: "settings", element: <SettingsPage /> },
           { path: "users", element: <UsersListPage /> },
           { path: "users/new", element: <UserCreatePage /> },

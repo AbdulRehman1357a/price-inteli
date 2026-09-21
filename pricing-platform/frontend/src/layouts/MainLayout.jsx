@@ -101,6 +101,7 @@ function NavDrawerGroup({ label, items, onNavigate }) {
 
 const PRIMARY_NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard" },
+  { to: "/categories", label: "Categories" },
   { to: "/products", label: "Products" },
   { to: "/inventory", label: "Inventory" },
 ];
