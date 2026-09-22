@@ -17,9 +17,10 @@ import Typography from "@mui/material/Typography";
 export default function LabelPreview({ colors }) {
   const labelW = 240;
   const labelH = 150;
-  const pad = 4;
-  const bannerH = 14;
-  const unitBoxW = 48;
+  const pad = 6;      // Scaled from 2mm (2 * 3)
+  const gap = 4.5;    // Scaled from 1.5mm (1.5 * 3)
+  const bannerH = 13.5; // Scaled from 4.5mm (4.5 * 3)
+  const unitBoxW = 50;
 
   const bannerColor = colors.banner ?? "#111111";
   const textColor = colors.text ?? "#111111";
