@@ -83,7 +83,12 @@ routes (app/api/v1) → services (app/services) → repositories (app/repositori
 - **Database**: MySQL 8
 - **Infra**: Docker, Redis, MQTT (ESL), AWS (RDS / S3 / Secrets Manager / CloudWatch)
 
-## Getting started (local dev)
+### 2026-09-22
+- PDF label preview fix: replaced `<embed>` with `<iframe>` for reliable inline PDF rendering in the Output Jobs result view. Added console debug logging for the PDF payload to aid troubleshooting.
+
+### 2026-09-22
+- Debugged PDF label preview: replaced iframe for more reliable PDF rendering and added payload logging.
+
 
 ### Backend
 

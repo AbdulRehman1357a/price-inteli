@@ -128,6 +128,7 @@ function JobResultView({ job }) {
   }
 
   if (payload.pdf_base64) {
+    console.log("PDF Payload:", payload);
     const pdfDataUrl = `data:${payload.pdf_mime};base64,${payload.pdf_base64}`;
     return (
       <Stack spacing={1} alignItems="flex-start" sx={{ width: "100%" }}>
@@ -135,9 +136,9 @@ function JobResultView({ job }) {
           {payload.product_name} — {payload.currency} {payload.price}
         </Typography>
         <Box
-          component="embed"
+          component="iframe"
           src={pdfDataUrl}
-          type="application/pdf"
+          title="PDF Preview"
           sx={{ width: "100%", height: 320, border: "1px solid", borderColor: "divider", borderRadius: 1 }}
         />
         <Link href={pdfDataUrl} download={`${payload.sku || "label"}.pdf`}>
