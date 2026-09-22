@@ -180,6 +180,9 @@ export default function MainLayout() {
               <Button color="inherit" component={RouterLink} to="/dashboard">
                 Dashboard
               </Button>
+              <Button color="inherit" component={RouterLink} to="/categories">
+                Categories
+              </Button>
               <Button color="inherit" component={RouterLink} to="/products">
                 Products
               </Button>
